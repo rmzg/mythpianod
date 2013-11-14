@@ -635,13 +635,13 @@ void MythPianod::Refresh() {
 		service->GetTimes(&played, &duration);
 		string rating = service->GetCurrentSong()["Rating"];
 
-		if(rating == "good") {
+		if(rating == "good" || rating == "good artistseed") {
 			m_ratingText->SetText(QString("This song makes me warm and fuzzy inside!"));
 		}
 		else if(rating == "bad") {
 			m_ratingText->SetText(QString("Terrible song! Make it stop! Ahhh..."));
 		}
-		else if(rating == "unknown") {
+		else if(rating == "neutral" || rating == "neutral artistseed") {
 			m_ratingText->SetText(QString("Can't put my finger on this song yet..."));
 		}
 		else {
