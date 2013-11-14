@@ -41,12 +41,12 @@ THE SOFTWARE.
 using namespace std;
 
 static MythPianoService* gMythPianoService = NULL;
-MythPianoService * GetMythPianoService()
-{
-  if (!gMythPianoService)
-    gMythPianoService = new MythPianoService();
 
-  return gMythPianoService;
+MythPianoService * GetMythPianoService() {
+	if (!gMythPianoService)
+		gMythPianoService = new MythPianoService();
+
+	return gMythPianoService;
 }
 
 void runPandora(void);
@@ -54,119 +54,121 @@ int  RunPandora(void);
 void setupKeys(void);
 
 
-void setupKeys(void)
-{
-  REG_JUMP("MythPianod", QT_TRANSLATE_NOOP("MythPianod",
-					    "Sample plugin"), "", runPandora);
+void setupKeys(void) {
+	REG_JUMP("MythPianod", QT_TRANSLATE_NOOP("MythPianod",
+				"Sample plugin"), "", runPandora);
 
-  REG_KEY("MythPianod", "VOLUMEDOWN",  "Volume down", "[,{,F10,Volume Down");
-  REG_KEY("MythPianod", "VOLUMEUP",    "Volume up",   "],},F11,Volume Up");
-  REG_KEY("MythPianod", "PLAY",        "Play",        "p");
-  REG_KEY("MythPianod", "PAUSE",       "Pause",        " ");
-  REG_KEY("MythPianod", "NEXTTRACK",   "Move to the next track", ",,<,Q,Home");
+	REG_KEY("MythPianod", "VOLUMEDOWN",  "Volume down", "[,{,F10,Volume Down");
+	REG_KEY("MythPianod", "VOLUMEUP",    "Volume up",   "],},F11,Volume Up");
+	REG_KEY("MythPianod", "PLAY",        "Play",        "p");
+	REG_KEY("MythPianod", "PAUSE",       "Pause",        " ");
+	REG_KEY("MythPianod", "NEXTTRACK",   "Move to the next track", ",,<,Q,Home");
 }
 
-int mythplugin_init(const char *libversion)
-{
-  //if (!gContext->TestPopupVersion("mythpianod",
-					//libversion,
-					//MYTH_BINARY_VERSION))
-    //return -1;
-  setupKeys();
-  return 0;
+int mythplugin_init(const char *libversion) {
+	//if (!gContext->TestPopupVersion("mythpianod",
+	//libversion,
+	//MYTH_BINARY_VERSION))
+	//return -1;
+
+	setupKeys();
+	return 0;
 }
 
-void runPandora(void)
-{
-  RunPandora();
+void runPandora(void) {
+	RunPandora();
 }
 
-int RunPandora()
-{
-  // Setup Piano Service
-  MythPianoService *service = GetMythPianoService();
+int RunPandora() {
+	// Setup Piano Service
+	MythPianoService *service = GetMythPianoService();
 
-  /*
-  showPopupDialog();
-  GetMythMainWindow()->GetMainStack()->PopScreen(false, true);
-  */
-  // try logging in here.  If it works, then don't show the login dialog.
-  if (service->Login() != 0) {
-    showLoginDialog();
-    return 0;
-  }
+	/*
+		 showPopupDialog();
+		 GetMythMainWindow()->GetMainStack()->PopScreen(false, true);
+	 */
 
-  if(service->GetCurrentStation() == "") {
-	  showStationSelectDialog();
-  } else {
-	  showPlayerDialog();
-  }
-  return 0;
+	// try logging in here.  If it works, then don't show the login dialog.
+	if (service->Login() != 0) {
+		showLoginDialog();
+		return 0;
+	}
+
+	if(service->GetCurrentStation() == "") {
+		showStationSelectDialog();
+	}
+	else {
+		showPlayerDialog();
+	}
+	return 0;
 }
 
-int mythplugin_run(void)
-{
-  return RunPandora();
+int mythplugin_run(void) {
+	return RunPandora();
 }
 
-int mythplugin_config(void)
-{
-  return -1;
+int mythplugin_config(void) {
+	return -1;
 }
 
-int showLoginDialog()
-{
-  MythScreenStack *mainStack = GetMythMainWindow()->GetMainStack();
-  MythPianodConfig *config = new MythPianodConfig(mainStack, "pandoraconfig");
-  if (config->Create()) {
-    mainStack->AddScreen(config);
-    return 0;
-  } else {
-    delete config;
-    return -1;
-  }
-  return 0;
+int showLoginDialog() {
+	MythScreenStack *mainStack = GetMythMainWindow()->GetMainStack();
+	MythPianodConfig *config = new MythPianodConfig(mainStack, "pandoraconfig");
+
+	if (config->Create()) {
+		mainStack->AddScreen(config);
+		return 0;
+	}
+	else {
+		delete config;
+		return -1;
+	}
+
+	return 0;
 }
 
-int showPopupDialog()
-{
-  MythScreenStack *mainStack = GetMythMainWindow()->GetMainStack();
-  MythPianodPopup *popup = new MythPianodPopup(mainStack, "popup");
-  if (popup->Create()) {
-    mainStack->AddScreen(popup);
-    return 0;
-  } else {
-    delete popup;
-    return -1;
-  }
-  return 0;
+int showPopupDialog() {
+	MythScreenStack *mainStack = GetMythMainWindow()->GetMainStack();
+	MythPianodPopup *popup = new MythPianodPopup(mainStack, "popup");
+
+	if (popup->Create()) {
+		mainStack->AddScreen(popup);
+		return 0;
+	} 
+	else {
+		delete popup;
+		return -1;
+	}
+
+	return 0;
 }
 
 
-int showStationSelectDialog()
-{
-  MythScreenStack *mainStack = GetMythMainWindow()->GetMainStack();
-  MythPianodStationSelect *select = new MythPianodStationSelect(mainStack, "pandorastations");
-  if (select->Create()) {
-    mainStack->AddScreen(select);
-    return 0;
-  } else {
-    delete select;
-    return -1;
-  }
-  return 0;
+int showStationSelectDialog() {
+	MythScreenStack *mainStack = GetMythMainWindow()->GetMainStack();
+	MythPianodStationSelect *select = new MythPianodStationSelect(mainStack, "pandorastations");
+
+	if (select->Create()) {
+		mainStack->AddScreen(select);
+		return 0;
+	}
+	else {
+		delete select;
+		return -1;
+	}
+	return 0;
 }
 
-int showPlayerDialog()
-{
-  MythScreenStack *mainStack = GetMythMainWindow()->GetMainStack();
-  MythPianod *mythpianod = new MythPianod(mainStack, "pandora");
-  
-  if (mythpianod->Create()){
-    mainStack->AddScreen(mythpianod);
-  } else {
-    delete mythpianod;
-    return -1;
-  }
-  return 0;
+int showPlayerDialog() {
+	MythScreenStack *mainStack = GetMythMainWindow()->GetMainStack();
+	MythPianod *mythpianod = new MythPianod(mainStack, "pandora");
+
+	if (mythpianod->Create()){
+		mainStack->AddScreen(mythpianod);
+	} 
+	else {
+		delete mythpianod;
+		return -1;
+	}
+	return 0;
 }
