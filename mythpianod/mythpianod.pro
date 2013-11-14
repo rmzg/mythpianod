@@ -4,8 +4,8 @@ include ( ../../programs-libs.pro )
 
 QT += xml sql opengl qt3support network
 
-PREFIX=/usr/local
-LIBDIR=/usr/local/lib
+PREFIX=/usr
+LIBDIR=/usr/lib
 
 TEMPLATE = lib
 CONFIG += plugin thread
