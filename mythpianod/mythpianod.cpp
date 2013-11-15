@@ -48,7 +48,7 @@ MythPianoService::MythPianoService()
 		current_station(-1),
 		current_station_name(""),
 		pianod_ip("127.0.0.1"),
-		pianod_port(2323),
+		pianod_port(4445),
 		pianod_fd(-1),
 		response(NULL),
 		duration("00:00"),
