@@ -16,3 +16,5 @@ In one of your UI files (mainmenu.xml), add the following:
    <text>Pandora Myth</text>
    <action>PLUGIN mythpianod</action>
 </button>
+
+Or run install.pl that attempts to perform the above action automatically.
