@@ -4,17 +4,17 @@
 
 	<!-- Open Pandora -->
 	<window name="pandora">
-		<fontdef name="debug" face="Arial">
+		<fontdef name="debug" from="basesmall">
 			<pixelsize>12</pixelsize>
 			<color>#ffffff</color>
 		</fontdef>
 
-		<fontdef name="song" face="Arial">
+		<fontdef name="song" from="basesmall">
 			<pixelsize>26</pixelsize>
 			<color>#ffffff</color>
 		</fontdef>
 
-		<fontdef name="other" face="Arial">
+		<fontdef name="other" from="basesmall">
 			<pixelsize>20</pixelsize>
 			<color>#ffffff</color>
 		</fontdef>
@@ -83,38 +83,43 @@
 		</textarea>
 
 		<button name="unloveBtn" from="basewidebutton">
-			<position>50,560</position>
+			<position>50,520</position>
 			<value>Unlove</value>
 		</button>
 
 		<button name="stationsBtn" from="basewidebutton">
-			<position>350,560</position>
+			<position>350,520</position>
 			<value>Select Station</value>
 		</button>
 
 		<button name="skipBtn" from="basewidebutton">
-			<position>650,560</position>
+			<position>650,520</position>
 			<value>Skip</value>
 		</button>
 
 		<button name="tiredBtn" from="basewidebutton">
-			<position>50,620</position>
+			<position>50,580</position>
 			<value>Tired</value>
 		</button>
 
 		<button name="loveBtn" from="basewidebutton">
-			<position>350,620</position>
+			<position>350,580</position>
 			<value>Love</value>
 		</button>
 
 		<button name="hateBtn" from="basewidebutton">
-			<position>650,620</position>
+			<position>650,580</position>
 			<value>Hate</value>
 		</button>
 
 		<button name="logoutBtn" from="basewidebutton">
-			<position>350,680</position>
+			<position>350,640</position>
 			<value>Logout</value>
+		</button>
+
+		<button name="stopBtn" from="basewidebutton">
+			<position>650,640</position>
+			<value>Stop</value>
 		</button>
 
 		<textarea name="outtext">

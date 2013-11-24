@@ -39,7 +39,7 @@ THE SOFTWARE.
 // MythPianod headers
 #include "mythpianod.h"
 
-static int debug = 0;
+static int debug = 0; 
 
 MythPianoService::MythPianoService()
 	: m_PlayerThread(NULL),
@@ -55,7 +55,16 @@ MythPianoService::MythPianoService()
 		played("00:00"),
 		song_changed(0)
 {
+	gCoreContext->RegisterForPlayback(this, SLOT(StopCurrentSong()));
 }
+
+void MythPianoService::StopCurrentSong(void) {
+	if( this->Login() == 0 ) { //Is this reundant? We want to make sure we can send commands..
+		this->StopSong();
+		this->SkipSong();
+	}
+}
+	
 
 void MythPianoService::SetCurrentStation(QString name) {
 	int x = 0;
@@ -109,7 +118,7 @@ void MythPianoService::Logout() {
 	SendPianodRequest(200);
 	PianodDisconnect("Exiting plugin from Pianod");
 	if(debug)
-	printf("Exiting plugin from Pianod\n");
+		printf("Exiting plugin from Pianod\n");
 }
 
 void MythPianoService::PianodDisconnect(string msg) {
@@ -708,6 +717,7 @@ bool MythPianod::Create(void) {
 	UIUtilE::Assign(this, m_unloveBtn,     "unloveBtn", &err);
 	UIUtilE::Assign(this, m_skipBtn,     "skipBtn", &err);
 	UIUtilE::Assign(this, m_hateBtn,     "hateBtn", &err);
+	UIUtilE::Assign(this, m_stopBtn,     "stopBtn", &err);
 	UIUtilE::Assign(this, m_loveBtn,     "loveBtn", &err);
 	UIUtilE::Assign(this, m_tiredBtn,     "tiredBtn", &err);
 	UIUtilE::Assign(this, m_stationsBtn,   "stationsBtn", &err);
@@ -724,6 +734,7 @@ bool MythPianod::Create(void) {
 	connect(m_tiredBtn, SIGNAL(Clicked()), this, SLOT(tiredCallback()));
 	connect(m_loveBtn, SIGNAL(Clicked()), this, SLOT(loveCallback()));
 	connect(m_hateBtn, SIGNAL(Clicked()), this, SLOT(hateCallback()));
+	connect(m_stopBtn, SIGNAL(Clicked()), this, SLOT(stopCallback()));
 	connect(m_stationsBtn, SIGNAL(Clicked()), this, SLOT(selectStationCallback()));
 
 	BuildFocusList();
@@ -850,6 +861,10 @@ void MythPianod::unloveCallback() {
 
 void MythPianod::skipCallback() {
 	GetMythPianoService()->SkipSong();
+}
+void MythPianod::stopCallback() {
+	GetMythPianoService()->StopSong(); //Stop prevents next song from playing
+	GetMythPianoService()->SkipSong(); //Skipping actually terminates current song
 }
 void MythPianod::loveCallback() {
 	GetMythPianoService()->LoveSong();

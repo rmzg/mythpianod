@@ -65,85 +65,88 @@ class MythPianoResponse {
 	}
 };
 
-class MythPianoServiceListener
-{
+class MythPianoServiceListener {
  public:
   virtual void RecvMessage(const char* message) = 0;
 };
 
-class MythPianoService : public QObject
-{
- Q_OBJECT
+class MythPianoService : public QObject {
+	Q_OBJECT
 
- public:
-  MythPianoService();
-  ~MythPianoService();
+	public:
+		MythPianoService();
+		~MythPianoService();
 
-  int  Login();
-  void Logout();
-  void PauseToggle();
-  int GetPlaylist();
+		int  Login();
+		void Logout();
+		void PauseToggle();
+		int GetPlaylist();
 
-  void StartPlayback();
-  void StartPlayerThread();
-  void StopPlayerThread();
-  void StopPlayback();
-  void NextSong();
+		void StartPlayback();
+		void StartPlayerThread();
+		void StopPlayerThread();
+		void StopPlayback();
+		void NextSong();
 
-  void VolumeUp();
-  void VolumeDown();
-  int  Volume();
-  void ToggleMute();
+		void VolumeUp();
+		void VolumeDown();
+		int  Volume();
+		void ToggleMute();
 
-  void BroadcastMessage(const char *format, ...);
+		void BroadcastMessage(const char *format, ...);
 
-  void SetMessageListener(MythPianoServiceListener* listener);
-  void RemoveMessageListener(MythPianoServiceListener* listener);
+		void SetMessageListener(MythPianoServiceListener* listener);
+		void RemoveMessageListener(MythPianoServiceListener* listener);
 
-  map<string, string> GetCurrentSong() { return current_song; };
-  int SongChanged() { if(song_changed) { song_changed = 0; return 1; } return 0;};
-  void SkipSong() { rlen = sprintf(request, "skip\n"); SendPianodRequest(200); }
-  void TiredSong() { rlen = sprintf(request, "rate overplayed\n"); SendPianodRequest(200); }
-  void HateSong() { rlen = sprintf(request, "rate bad\n"); SendPianodRequest(200); }
-  void LoveSong() { rlen = sprintf(request, "rate good\n"); SendPianodRequest(200); }
-  void UnloveSong() { rlen = sprintf(request, "rate neutral\n"); SendPianodRequest(200); }
-  vector<string> GetStations() { return stations; };
-  string GetCurrentStation() { if(current_station != -1) return stations[current_station]; else return ""; };
-  void GetTimes(string *played, string *duration);
-  string	     current_station_name;
-  int 		     current_station;
-  void SetCurrentStation(QString name);
+		map<string, string> GetCurrentSong() { return current_song; };
+		int SongChanged() { if(song_changed) { song_changed = 0; return 1; } return 0;};
+		void SkipSong() { rlen = sprintf(request, "skip\n"); SendPianodRequest(200); }
+		void StopSong() { rlen = sprintf(request, "stop\n"); SendPianodRequest(200); }
+		void TiredSong() { rlen = sprintf(request, "rate overplayed\n"); SendPianodRequest(200); }
+		void HateSong() { rlen = sprintf(request, "rate bad\n"); SendPianodRequest(200); }
+		void LoveSong() { rlen = sprintf(request, "rate good\n"); SendPianodRequest(200); }
+		void UnloveSong() { rlen = sprintf(request, "rate neutral\n"); SendPianodRequest(200); }
+		vector<string> GetStations() { return stations; };
+		string GetCurrentStation() { if(current_station != -1) return stations[current_station]; else return ""; };
+		void GetTimes(string *played, string *duration);
+		string	     current_station_name;
+		int 		     current_station;
+		void SetCurrentStation(QString name);
 
- private:
-  void CheckForResponse(int success1, int success2, int success3, int success4, int len);
-  map<string, string> PullOutSong(int idx);
-  std::vector<MythPianoResponse> *GetPianodLines(int success1, int success2, int success3, int success4);
-  int SendPianodRequest(int success);
-  void PianodDisconnect(std::string msg);
-  int RepopulateStations();
+	public slots:
+		void StopCurrentSong(void);
 
-  pthread_t          m_PlayerThread;
+	private:
+		void CheckForResponse(int success1, int success2, int success3, int success4, int len);
+		map<string, string> PullOutSong(int idx);
+		std::vector<MythPianoResponse> *GetPianodLines(int success1, int success2, int success3, int success4);
+		int SendPianodRequest(int success);
+		void PianodDisconnect(std::string msg);
+		int RepopulateStations();
 
-  int song_changed;
-  string duration;
-  string played;
-  map<string, string> current_song;
-  vector<map<string,string> > playlist;
-  vector<string>     stations;
+		pthread_t          m_PlayerThread;
 
-  MythPianoServiceListener* m_Listener;
+		int song_changed;
+		string duration;
+		string played;
+		map<string, string> current_song;
+		vector<map<string,string> > playlist;
+		vector<string>     stations;
 
-  QTimer*            m_Timer;
-  vector<MythPianoResponse> *response;
-  
-  struct sockaddr_in pianod_addr;
-  char * pianod_ip;
-  int pianod_port;
-  int pianod_fd;
-  char request[1000];
-  int rlen;
-  private slots:
-  int service_heartbeat(void);
+		MythPianoServiceListener* m_Listener;
+
+		QTimer*            m_Timer;
+		vector<MythPianoResponse> *response;
+
+		struct sockaddr_in pianod_addr;
+		char * pianod_ip;
+		int pianod_port;
+		int pianod_fd;
+		char request[1000];
+		int rlen;
+
+		private slots:
+			int service_heartbeat(void);
 };
 
 /** \class MythPianod
@@ -175,6 +178,7 @@ class MythPianod : public MythScreenType, public MythPianoServiceListener
     MythUIButton   *m_tiredBtn;
     MythUIButton   *m_loveBtn;
     MythUIButton   *m_hateBtn;
+    MythUIButton   *m_stopBtn;
     MythUIButton   *m_stationsBtn;
     MythUIText     *m_outText;
     MythUIImage    *m_coverartImage;
@@ -191,6 +195,7 @@ class MythPianod : public MythScreenType, public MythPianoServiceListener
     void logoutCallback();
     void skipCallback();
     void hateCallback();
+    void stopCallback();
     void loveCallback();
     void tiredCallback();
     void selectStationCallback();
